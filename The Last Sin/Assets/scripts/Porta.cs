@@ -8,6 +8,7 @@ public class Porta : MonoBehaviour
 
     [Header("Precisa Chave")]
     public bool precisaChave;
+    public string IdChaveQPrecisa;
 
     [Header("Tranca")]
     [TextArea(2, 4)]
@@ -47,10 +48,19 @@ public class Porta : MonoBehaviour
         if (gerenciador == null)
             return;
 
-        if (precisaChave && !gerenciador.possuiChave)
+        if (precisaChave)
         {
-            Debug.Log(mensagemTrancada);
-            return;
+            if (Inventário.Instance.PossuiItem(IdChaveQPrecisa))
+                return;
+
+            if (!Inventário.Instance.PossuiItem(IdChaveQPrecisa))
+            {
+                Debug.Log("Sem chave");
+                return;
+            }
+
+            Inventário.Instance.RemoverItem(IdChaveQPrecisa);
+
         }
         if (gerenciador.finalPiorAinda == itensChaves)
         {
@@ -61,8 +71,6 @@ public class Porta : MonoBehaviour
             gerenciador.TrocarCena(proximaSala);
             gerenciador.possuiChave = false;
         }
-
-        gerenciador.TrocarCena(proximaSala);
     }
 }
 
